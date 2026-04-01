@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FragZone Gaming Cafe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #050508;
+      --bg2: #0a0a12;
+      --accent: #00f0ff;
+      --accent2: #ff003c;
+      --accent3: #7b2fff;
+      --text: #e0e0f0;
+      --muted: #6a6a8a;
+      --card: #0d0d1a;
+      --border: rgba(0,240,255,0.15);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 17px;
+      overflow-x: hidden;
+    }
+
+    /* SCANLINE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,240,255,0.015) 2px,
+        rgba(0,240,255,0.015) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 60px;
+      background: rgba(5,5,8,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: 1.3rem;
+      color: var(--accent);
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px var(--accent);
+    }
+
+    .nav-logo span { color: var(--accent2); }
+
+    nav ul {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    nav ul a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    nav ul a:hover { color: var(--accent); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      padding: 120px 20px 60px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(123,47,255,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(0,240,255,0.1) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 80% 20%, rgba(255,0,60,0.08) 0%, transparent 60%);
+    }
+
+    /* GRID FLOOR */
+    .hero-grid {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 50%;
+      background-image:
+        linear-gradient(rgba(0,240,255,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,240,255,0.07) 1px, transparent 1px);
+      background-size: 60px 60px;
+      transform: perspective(400px) rotateX(40deg);
+      transform-origin: bottom;
+      mask-image: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+    }
+
+    .hero-content { position: relative; z-index: 2; max-width: 800px; }
+
+    .hero-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 5px 16px;
+      margin-bottom: 28px;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2.8rem, 8vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -1px;
+      animation: fadeUp 0.8s 0.15s ease both;
+    }
+
+    .hero h1 .line1 { color: #fff; }
+    .hero h1 .line2 {
+      color: transparent;
+      -webkit-text-stroke: 1.5px var(--accent);
+      display: block;
+    }
+
+    .hero-sub {
+      margin: 24px auto 40px;
+      max-width: 520px;
+      color: var(--muted);
+      font-size: 1.1rem;
+      line-height: 1.7;
+      animation: fadeUp 0.8s 0.3s ease both;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp 0.8s 0.45s ease both;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      padding: 14px 32px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #fff;
+      box-shadow: 0 0 30px var(--accent);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--accent);
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      padding: 13px 32px;
+      border: 1px solid var(--accent);
+      cursor: pointer;
+      text-decoration: none;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: all 0.2s;
+    }
+
+    .btn-outline:hover {
+      background: rgba(0,240,255,0.08);
+    }
+
+    /* STATS BAR */
+    .stats-bar {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 28px 60px;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .stat { text-align: center; }
+
+    .stat-num {
+      font-family: 'Orbitron', monospace;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--accent);
+      text-shadow: 0 0 20px rgba(0,240,255,0.5);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* SECTIONS */
+    section { padding: 100px 60px; max-width: 1200px; margin: 0 auto; }
+
+    .section-tag {
+      font-size: 0.7rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .section-title span { color: var(--accent); }
+
+    .section-desc {
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.8;
+      margin-bottom: 56px;
+    }
+
+    /* ABOUT */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .about-visual {
+      position: relative;
+      height: 360px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .about-visual::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(123,47,255,0.2), transparent 70%);
+    }
+
+    .about-icon {
+      font-size: 8rem;
+      filter: drop-shadow(0 0 30px rgba(0,240,255,0.4));
+      position: relative;
+      z-index: 1;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .corner {
+      position: absolute;
+      width: 20px; height: 20px;
+    }
+    .corner-tl { top: -1px; left: -1px; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); }
+    .corner-tr { top: -1px; right: -1px; border-top: 2px solid var(--accent); border-right: 2px solid var(--accent); }
+    .corner-bl { bottom: -1px; left: -1px; border-bottom: 2px solid var(--accent); border-left: 2px solid var(--accent); }
+    .corner-br { bottom: -1px; right: -1px; border-bottom: 2px solid var(--accent); border-right: 2px solid var(--accent); }
+
+    .about-features { display: flex; flex-direction: column; gap: 20px; }
+
+    .feature-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 20px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .feature-item:hover {
+      border-color: var(--accent);
+      transform: translateX(6px);
+    }
+
+    .feature-icon { font-size: 1.8rem; flex-shrink: 0; }
+
+    .feature-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.85rem;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .feature-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+
+    /* STATIONS */
+    .stations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .station-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 36px 28px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+      cursor: default;
+    }
+
+    .station-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .station-card:hover { border-color: var(--accent); transform: translateY(-6px); }
+    .station-card:hover::before { opacity: 1; }
+
+    .station-card:nth-child(2) { --accent: #ff003c; }
+    .station-card:nth-child(3) { --accent: #7b2fff; }
+    .station-card:nth-child(4) { --accent: #00f0ff; }
+
+    .station-emoji { font-size: 2.8rem; margin-bottom: 20px; display: block; }
+
+    .station-name {
+      font-family: 'Orbitron', monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .station-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin-bottom: 20px; }
+
+    .station-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 3px 10px;
+    }
+
+    /* PRICING */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+
+    .price-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 40px 28px;
+      text-align: center;
+      position: relative;
+      transition: transform 0.2s;
+    }
+
+    .price-card.featured {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(0,240,255,0.05), var(--card));
+    }
+
+    .price-card.featured::after {
+      content: 'POPULAR';
+      position: absolute;
+      top: -1px; right: 20px;
+      background: var(--accent);
+      color: #000;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 4px 12px;
+    }
+
+    .price-card:hover { transform: translateY(-4px); }
+
+    .price-name {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .price-amount {
+      font-family: 'Orbitron', monospace;
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .price-per { color: var(--muted); font-size: 0.85rem; margin-bottom: 28px; margin-top: 6px; }
+
+    .price-features { list-style: none; text-align: left; margin-bottom: 32px; }
+
+    .price-features li {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .price-features li::before { content: '▸'; color: var(--accent); font-size: 0.7rem; }
+
+    /* CONTACT */
+    .contact-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+
+    .contact-info { display: flex; flex-direction: column; gap: 24px; }
+
+    .contact-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 20px;
+      background: var(--card);
+      border: 1px solid var(--border);
+    }
+
+    .contact-item-icon { font-size: 1.5rem; flex-shrink: 0; }
+
+    .contact-item-label {
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .contact-item-val { color: var(--text); font-weight: 600; }
+
+    .contact-form { display: flex; flex-direction: column; gap: 16px; }
+
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+
+    .form-label {
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .form-input, .form-textarea {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 16px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    .form-input:focus, .form-textarea:focus { border-color: var(--accent); }
+    .form-textarea { resize: vertical; min-height: 120px; }
+
+    /* FOOTER */
+    footer {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      padding: 40px 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-logo {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+
+    .footer-logo span { color: var(--accent2); }
+
+    .footer-copy { color: var(--muted); font-size: 0.85rem; }
+
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--accent); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-14px); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      nav ul { display: none; }
+      section { padding: 60px 20px; }
+      .about-grid, .contact-wrapper { grid-template-columns: 1fr; }
+      .stats-bar { padding: 28px 20px; }
+      footer { padding: 28px 20px; flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">FRAG<span>ZONE</span></div>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#stations">Stations</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-tag">⚡ Now Open — Delhi's #1 Gaming Cafe</div>
+      <h1>
+        <span class="line1">ENTER THE</span>
+        <span class="line2">FRAGZONE</span>
+      </h1>
+      <p class="hero-sub">High-performance gaming stations. Zero lag. Pure adrenaline. Whether you're grinding ranked or chilling with friends — this is your arena.</p>
+      <div class="hero-btns">
+        <a href="#pricing" class="btn-primary">VIEW PRICING</a>
+        <a href="#contact" class="btn-outline">BOOK A SLOT</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-num">50+</div><div class="stat-label">Gaming Stations</div></div>
+    <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">Open Hours</div></div>
+    <div class="stat"><div class="stat-num">1ms</div><div class="stat-label">Response Time</div></div>
+    <div class="stat"><div class="stat-num">200+</div><div class="stat-label">Games Available</div></div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-grid">
+      <div class="about-visual">
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div>
+        <div class="corner corner-br"></div>
+        <div class="about-icon">🎮</div>
+      </div>
+      <div>
+        <p class="section-tag">// About Us</p>
+        <h2 class="section-title">Built For <span>Gamers</span><br>By Gamers</h2>
+        <p class="section-desc">FragZone isn't just a cafe — it's a battleground. We built this space for people who take their game seriously. Top-tier hardware, ultra-fast internet, and a vibe that hits different.</p>
+        <div class="about-features">
+          <div class="feature-item">
+            <div class="feature-icon">⚡</div>
+            <div>
+              <div class="feature-title">Ultra-Fast Internet</div>
+              <div class="feature-desc">1 Gbps dedicated fiber. Zero throttling, zero excuses.</div>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🖥️</div>
+            <div>
+              <div class="feature-title">Pro-Grade Hardware</div>
+              <div class="feature-desc">RTX 4070 rigs, 165Hz monitors, mechanical keyboards.</div>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🍕</div>
+            <div>
+              <div class="feature-title">Food & Drinks</div>
+              <div class="feature-desc">Snacks, energy drinks, and meals — order from your seat.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATIONS -->
+  <section id="stations" style="background: var(--bg2); max-width: 100%; padding: 100px 60px;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <p class="section-tag">// Gaming Stations</p>
+      <h2 class="section-title">Pick Your <span>Weapon</span></h2>
+      <p class="section-desc">From console to VR — we've got every setup you need to dominate.</p>
+      <div class="stations-grid">
+        <div class="station-card">
+          <span class="station-emoji">🖥️</span>
+          <div class="station-name">PC Gaming</div>
+          <div class="station-desc">RTX 4070 Super, i9 processors, 32GB RAM. Built for AAA titles and competitive FPS.</div>
+          <span class="station-badge">20 Stations</span>
+        </div>
+        <div class="station-card">
+          <span class="station-emoji">🎮</span>
+          <div class="station-name">PlayStation 5</div>
+          <div class="station-desc">PS5 with 4K OLED displays. FIFA, God of War, Spider-Man and more.</div>
+          <span class="station-badge">10 Stations</span>
+        </div>
+        <div class="station-card">
+          <span class="station-emoji">🕶️</span>
+          <div class="station-name">VR Zone</div>
+          <div class="station-desc">Meta Quest 3 headsets. Full room-scale VR experiences that blow your mind.</div>
+          <span class="station-badge">6 Stations</span>
+        </div>
+        <div class="station-card">
+          <span class="station-emoji">🏆</span>
+          <div class="station-name">Tournament Arena</div>
+          <div class="station-desc">Dedicated 10-seat arena for scrims, tournaments, and squad sessions.</div>
+          <span class="station-badge">Book Now</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <p class="section-tag">// Pricing</p>
+    <h2 class="section-title">Simple <span>Pricing</span></h2>
+    <p class="section-desc">No hidden charges. Pay for what you play.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-name">Quick Session</div>
+        <div class="price-amount">₹60</div>
+        <div class="price-per">per hour</div>
+        <ul class="price-features">
+          <li>PC Station Access</li>
+          <li>1 Gbps Internet</li>
+          <li>Headset Included</li>
+          <li>200+ Game Library</li>
+        </ul>
+        <a href="#contact" class="btn-outline" style="display:block; text-align:center;">BOOK NOW</a>
+      </div>
+      <div class="price-card featured">
+        <div class="price-name">Day Pass</div>
+        <div class="price-amount">₹299</div>
+        <div class="price-per">8 hours unlimited</div>
+        <ul class="price-features">
+          <li>Any Station Access</li>
+          <li>1 Free Energy Drink</li>
+          <li>Priority Seating</li>
+          <li>Tournament Entry</li>
+        </ul>
+        <a href="#contact" class="btn-primary" style="display:block; text-align:center;">BOOK NOW</a>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Monthly Pass</div>
+        <div class="price-amount">₹999</div>
+        <div class="price-per">per month</div>
+        <ul class="price-features">
+          <li>40 Hours / Month</li>
+          <li>VR Zone Access</li>
+          <li>Member Discounts</li>
+          <li>Free Tournaments</li>
+        </ul>
+        <a href="#contact" class="btn-outline" style="display:block; text-align:center;">BOOK NOW</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" style="background: var(--bg2); max-width: 100%; padding: 100px 60px;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <p class="section-tag">// Contact</p>
+      <h2 class="section-title">Find The <span>Zone</span></h2>
+      <p class="section-desc">Walk in anytime or book your slot in advance. We're always ready.</p>
+      <div class="contact-wrapper">
+        <div class="contact-info">
+          <div class="contact-item">
+            <div class="contact-item-icon">📍</div>
+            <div>
+              <div class="contact-item-label">Location</div>
+              <div class="contact-item-val">Shop 14, Cyber Mall, Nehru Place, New Delhi — 110019</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">🕐</div>
+            <div>
+              <div class="contact-item-label">Hours</div>
+              <div class="contact-item-val">Open 24 Hours — 7 Days a Week</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">📞</div>
+            <div>
+              <div class="contact-item-label">Phone</div>
+              <div class="contact-item-val">+91 98765 43210</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">📧</div>
+            <div>
+              <div class="contact-item-label">Email</div>
+              <div class="contact-item-val">hello@fragzone.in</div>
+            </div>
+          </div>
+        </div>
+        <div class="contact-form">
+          <div class="form-group">
+            <label class="form-label">Your Name</label>
+            <input type="text" class="form-input" placeholder="Enter your name"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="text" class="form-input" placeholder="+91 XXXXX XXXXX"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea class="form-textarea" placeholder="Book a slot, ask a question..."></textarea>
+          </div>
+          <button class="btn-primary" style="align-self: flex-start; font-size:0.8rem;">SEND MESSAGE</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">FRAG<span>ZONE</span></div>
+    <div class="footer-copy">© 2025 FragZone Gaming Cafe. All rights reserved.</div>
+    <div class="footer-links">
+      <a href="#about">About</a>
+      <a href="#stations">Stations</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </footer>
+
+</body>
+</html>
